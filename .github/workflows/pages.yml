@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - implant52-site.zip
+      - preview-update/**
       - .github/workflows/pages.yml
   workflow_dispatch:
 
@@ -26,6 +27,7 @@ jobs:
       - name: Unpack and verify noindex
         run: |
           unzip -q implant52-site.zip -d _site
+          python preview-update/apply.py _site
           test -f _site/index.html
           test -f _site/404.html
           python - <<'PY'

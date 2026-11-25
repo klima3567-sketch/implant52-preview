@@ -1,0 +1,15 @@
+<div class="slavik" data-slavik>
+  <button class="slavik-launch" type="button" aria-controls="slavik-panel" aria-expanded="false"><span class="slavik-avatar" aria-hidden="true"><img src="/implant52-preview/assets/slavik-portrait.webp" alt="" width="600" height="339" decoding="async"></span><span><strong>Славик</strong><small>Помощник клиники</small></span></button>
+  <section class="slavik-panel" id="slavik-panel" role="dialog" aria-labelledby="slavik-title" hidden>
+   <div class="slavik-header"><span class="slavik-avatar" aria-hidden="true"><img src="/implant52-preview/assets/slavik-portrait.webp" alt="" width="600" height="339" decoding="async"></span><div><h2 id="slavik-title">Славик</h2><p>Помощник клиники</p></div>
+    <button class="slavik-reset" type="button" data-slavik-reset hidden>Очистить</button>
+    <button type="button" data-slavik-close aria-label="Закрыть помощника">×</button></div>
+   <div class="slavik-body">
+    <p class="slavik-intro">Привет! Подскажу цены, условия акций и как записаться в удобный филиал.</p>
+    <div class="slavik-reply" role="log" aria-label="Разговор со Славиком" aria-live="polite" hidden></div>
+   </div>
+   <div class="slavik-compose"><div class="slavik-topics"><button type="button" data-suggest="Какие сейчас акции?">Акции</button><button type="button" data-suggest="Сколько стоит гигиена?">Гигиена</button><button type="button" data-suggest="Где находятся филиалы?">Адреса</button><button type="button" data-suggest="Что взять на первый приём?">Первый визит</button><button type="button" data-suggest="Как записаться по ДМС?">ДМС</button><button type="button" data-suggest="Как выбрать врача?">Врачи</button></div>
+    <form class="slavik-form"><label class="visually-hidden" for="slavik-question">Вопрос Славику</label><input id="slavik-question" placeholder="Напишите вопрос" maxlength="180" autocomplete="off" required><button type="submit" aria-label="Отправить вопрос"><span class="arrow" aria-hidden="true">↗</span></button></form>
+   </div>
+  </section>
+ </div>
