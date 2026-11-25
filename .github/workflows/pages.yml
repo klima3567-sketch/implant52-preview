@@ -8,21 +8,17 @@ on:
       - .github/workflows/pages.yml
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+permissions: {}
 
 concurrency:
   group: implant52-pages
   cancel-in-progress: false
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,9 +35,32 @@ jobs:
               if '<meta name="robots" content="noindex,nofollow">' not in page.read_text():
                   raise SystemExit(f"Missing noindex,nofollow in {page}")
           PY
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Wait for the Pages artifact to be listed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in 1 2 3 4 5 6; do
+            if [ "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?name=github-pages" --jq .total_count)" = 1 ]; then
+              exit 0
+            fi
+            sleep 4
+          done
+          echo "::error::The Pages artifact was not listed after upload."
+          exit 1
       - uses: actions/deploy-pages@v5
         id: deploy
