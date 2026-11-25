@@ -1,0 +1,47 @@
+name: Publish Implant52 preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - implant52-site.zip
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: implant52-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Unpack and verify noindex
+        run: |
+          unzip -q implant52-site.zip -d _site
+          test -f _site/index.html
+          test -f _site/404.html
+          python - <<'PY'
+          from pathlib import Path
+
+          for page in Path("_site").rglob("*.html"):
+              if '<meta name="robots" content="noindex,nofollow">' not in page.read_text():
+                  raise SystemExit(f"Missing noindex,nofollow in {page}")
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - uses: actions/deploy-pages@v5
+        id: deploy
